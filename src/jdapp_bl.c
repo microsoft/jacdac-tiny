@@ -12,7 +12,10 @@ void app_queue_annouce() {
     txq_push(JD_SERVICE_NUMBER_CTRL, JD_CMD_ADVERTISEMENT_DATA, services, sizeof(services));
 }
 
-static void handle_packet(jd_packet_t *pkt) {
+void bl_process(void);
+void bl_handle_packet(jd_packet_t *pkt);
+
+void app_handle_packet(jd_packet_t *pkt) {
     bool matched_devid = pkt->device_identifier == device_id();
 
     if (pkt->flags & JD_FRAME_FLAG_IDENTIFIER_IS_SERVICE_CLASS) {

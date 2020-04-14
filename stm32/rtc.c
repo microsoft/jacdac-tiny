@@ -1,5 +1,7 @@
 #include "jdstm.h"
 
+#ifndef BL
+
 #define US_TICK_SCALE 20
 #define TICK_US_SCALE 10
 #define US_TO_TICKS(us) (((us)*ticksPerUs) >> US_TICK_SCALE)
@@ -187,3 +189,10 @@ void rtc_sleep(bool forceShallow) {
     rtc_sync_time();      // likely already happened in ISR, but doesn't hurt to check again
     LL_LPM_EnableSleep(); // i.e., no deep
 }
+#else
+void rtc_sleep(bool forceShallow) {
+    __WFI();
+}
+void rtc_sync_time() {}
+void rtc_cancel_cb() {}
+#endif

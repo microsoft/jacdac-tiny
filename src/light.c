@@ -402,4 +402,5 @@ void light_init() {
     state->intensity = DEFAULT_INTENSITY;
     state->numpixels = DEFAULT_NUMPIXELS;
     state->maxpower = DEFAULT_MAXPOWER;
+    px_init();
 }

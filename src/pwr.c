@@ -35,5 +35,9 @@ void pwr_leave_tim() {
 }
 
 void pwr_sleep() {
+#ifdef BL
+    rtc_sleep(true);
+#else
     rtc_sleep(pll_cnt || tim_cnt || jd_is_busy());
+#endif
 }

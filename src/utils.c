@@ -64,6 +64,7 @@ int itoa(int n, char *s) {
     return 0;
 }
 
+#ifndef BL
 // faster versions of memcpy() and memset()
 void *memcpy(void *dst, const void *src, size_t sz) {
     if (sz >= 4 && !((uintptr_t)dst & 3) && !((uintptr_t)src & 3)) {
@@ -108,6 +109,7 @@ void *memset(void *dst, int v, size_t sz) {
 
     return dst;
 }
+#endif
 
 uint32_t random_int(int max) {
     if (max == 0)

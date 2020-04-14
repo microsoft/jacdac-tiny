@@ -6,7 +6,6 @@ TARGET ?= jdm-v3
 
 JD_CORE = jacdac-core
 
-DEFINES += -DDEVICE_DMESG_BUFFER_SIZE=1024
 WARNFLAGS = -Wall -Wno-strict-aliasing
 CFLAGS = $(DEFINES) \
 	-mthumb -mfloat-abi=soft  \
@@ -25,6 +24,12 @@ BASE_TARGET ?= $(TARGET)
 
 ifneq ($(BMP),)
 BMP_PORT = $(shell ls -1 /dev/cu.usbmodem????????1 | head -1)
+endif
+
+ifeq ($(BL),)
+DEFINES += -DDEVICE_DMESG_BUFFER_SIZE=1024
+else
+DEFINES += -DDEVICE_DMESG_BUFFER_SIZE=0 -DBL
 endif
 
 C_SRC += $(wildcard src/*.c)
