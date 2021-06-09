@@ -43,7 +43,9 @@ static const struct PinPWM pins[] = {
     {PA_6, 1, LL_GPIO_AF_1, TIM3},  // rgb led
     {PA_7, 2, LL_GPIO_AF_1, TIM3},  // rgb led
     {PB_0, 3, LL_GPIO_AF_1, TIM3},  // rgb led
+    {PB_1, 4, LL_GPIO_AF_1, TIM3},  // rgb led
     {PB_8, 1, LL_GPIO_AF_2, TIM16}, // rgb led
+    {PA_10, 3, LL_GPIO_AF_2, TIM1}, // rgb led (PA12[PA10] on SO8)
 #else
 #ifdef TIM2
     {PA_1, 2, LL_GPIO_AF_2, TIM2},   // LED on jdm-v2
