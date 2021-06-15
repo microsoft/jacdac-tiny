@@ -55,6 +55,7 @@ static void setup_pin(uint8_t pin) {
 }
 
 void i2c_init(void) {
+    i2c_reset();
     setup_pin(PIN_SDA);
     setup_pin(PIN_SCL);
     LL_RCC_SetI2CClockSource(I2C_CLK_SRC);
@@ -130,6 +131,8 @@ int i2c_finish_write(bool repeated) {
 
 int i2c_read_ex(uint8_t addr, void *dst, unsigned len) {
     addr <<= 1;
+    bool fault = false;
+i2c_read_reset:
     LL_I2C_HandleTransfer(I2Cx, addr, LL_I2C_ADDRSLAVE_7BIT, len, LL_I2C_MODE_AUTOEND,
                           LL_I2C_GENERATE_RESTART_7BIT_READ);
     uint8_t *p = dst;
@@ -142,7 +145,12 @@ int i2c_read_ex(uint8_t addr, void *dst, unsigned len) {
 
         if (i >= MAXREP) {
             DMESG("T/o rd");
-            return -1;
+            if (fault)
+                hw_panic();
+            i2c_reset();
+            i2c_init();
+            fault = true;
+            goto i2c_read_reset;
         }
 
         *p++ = LL_I2C_ReceiveData8(I2Cx);
@@ -227,6 +235,26 @@ int i2c_read_reg16(uint8_t addr, uint16_t reg) {
     uint8_t r = 0;
     CHECK_RET(i2c_read_reg16_buf(addr, reg, &r, 1));
     return r;
+}
+
+void i2c_reset(void) {
+    pin_setup_output(PIN_SDA);
+    pin_setup_output(PIN_SCL);
+
+    pin_set(PIN_SDA, 0);
+    pin_set(PIN_SCL, 0);
+
+    target_wait_us(10);
+
+    pin_set(PIN_SDA, 1);
+    pin_set(PIN_SCL, 1);
+
+    for (int i = 0; i < 8; i++) {
+        pin_set(PIN_SCL, 1);
+        target_wait_us(10);
+        pin_set(PIN_SCL, 0);
+        target_wait_us(10);
+    }
 }
 
 #endif
